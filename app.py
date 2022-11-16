@@ -8,7 +8,7 @@ from sklearn.model_selection import cross_val_score
 from sklearn.model_selection import train_test_split
 from sklearn.naive_bayes import MultinomialNB
 from sklearn import metrics
-from imblearn.under_sampling import NearMiss
+#from imblearn.under_sampling import NearMiss
 import nltk
 nltk.download('stopwords')
 stopwords=nltk.corpus.stopwords.words("portuguese")
