@@ -26,6 +26,7 @@ import spacy
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 nlp = spacy.load('pt_core_news_sm')
 
+resultados=pd.read_csv('resultados.csv')
 
 def sentence_tokenizer(sentence):
     return [token.lemma_ for token in nlp(sentence.lower()) if (token.is_alpha & ~token.is_stop)]
@@ -33,6 +34,16 @@ def sentence_tokenizer(sentence):
 def normalizer(sentence):
     tokenized_sentence = sentence_tokenizer(sentence)
     return ' '.join(tokenized_sentence)
+
+#Histograma
+def plot_hist(df):
+    fig = go.Figure(data=[go.Histogram(x=df['resultados'])])
+    #fig = go.Figure([go.Bar(x=df.Palavras, y=df.Quantidade, text=df.Quantidade, textposition='auto')])
+    fig.update_layout(
+        autosize=False,
+        width=500,
+        height=500)
+    return fig  
 
 #load modelo NB
 filename='classifAmericNB.sav'
@@ -51,7 +62,12 @@ if input_button_submit:
     resultado1=None
     resultado1=loaded_model.predict(loaded_model1.transform([normalizer(input_avaliacao)]))
     if resultado1 is not None:
-        st.write(f'Obrigado por contribuir com a sua opinião. A sua avaliação da compra foi classifica automaticamente como: {resultado1}')
+        st.write(f'Obrigado por contribuir com a sua opinião. A sua avaliação da compra foi classifica automaticamente como: {resultado1[0]}')
+        novaEntrada=resultado1[0]
+        resultados.loc[len(resultados)] = novaEntrada
+        st.subheader('Histograma das Avaliações')
+        st.plotly_chart(plot_hist(resultados))
+
     
 
 
